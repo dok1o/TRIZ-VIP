@@ -1,3 +1,9 @@
+"scripts": {
+  "build": "vite build",
+  "predeploy": "npm run build",
+  "deploy": "gh-pages -d dist",
+  "dev": "vite"
+}
 {
   "name": "@figma/my-make-file",
   "private": true,
