@@ -52,7 +52,7 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
   const stages = [
     { id: 'input', icon: Lightbulb, label: 'Проблема', color: 'from-blue-500 to-blue-600' },
     { id: 'analysis', icon: Search, label: 'Анализ', color: 'from-cyan-500 to-cyan-600' },
-    { id: 'contradiction', icon: AlertTriangle, label: 'Противоречие', color: 'from-purple-500 to-purple-600' },
+    { id: 'contradiction', icon: AlertTriangle, label: 'Соответствие стратегическим целям бизнеса', color: 'from-purple-500 to-purple-600' },
     { id: 'solution', icon: Brain, label: 'Решение', color: 'from-green-500 to-green-600' },
   ];
 
@@ -66,7 +66,7 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
         background: 'linear-gradient(135deg, #EFF6FF 0%, #DBEAFE 100%)',
       }}
       animate={{
-        height: isExpanded ? 'calc(100vh - 4rem)' : isDimmed ? '5vh' : 'calc((100vh - 4rem) / 3)',
+        height: isExpanded ? 'calc(100vh - 4rem)' : isDimmed ? '5vh' : 'calc((100vh - 4rem) / 4)',
         opacity: isDimmed ? 0.3 : 1,
       }}
       transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
@@ -367,7 +367,7 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                           onClick={onNextSection}
                           className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl flex items-center justify-center gap-2 transition-colors order-3"
                         >
-                          Перейти к Карте гипотез
+                          Перейти к стратегическим целям бизнеса
                           <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                         </Button>
                       ) : (

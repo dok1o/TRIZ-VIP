@@ -49,7 +49,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
         background: 'linear-gradient(135deg, #F0F9FF 0%, #E0F2FE 100%)',
       }}
       animate={{
-        height: isExpanded ? 'calc(100vh - 4rem)' : isDimmed ? '5vh' : 'calc((100vh - 4rem) / 3)',
+        height: isExpanded ? 'calc(100vh - 4rem)' : isDimmed ? '5vh' : 'calc((100vh - 4rem) / 4)',
         opacity: isDimmed ? 0.3 : 1,
       }}
       transition={{ duration: 0.4, ease: [0.32, 0.72, 0, 1] }}
@@ -95,7 +95,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <Network className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">Карта гипотез</h2>
+            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">Соответствие стратегическим целям бизнеса</h2>
             <p className="text-sm sm:text-base text-slate-600">Нажмите для начала работы</p>
           </motion.div>
         ) : isDimmed ? (
@@ -104,7 +104,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <h2 className="text-base sm:text-xl text-slate-900">Карта гипотез</h2>
+            <h2 className="text-base sm:text-xl text-slate-900">Соответствие стратегическим целям бизнеса</h2>
           </motion.div>
         ) : (
           <motion.div 
@@ -113,7 +113,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">Карта гипотез</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">Соответствие стратегическим целям бизнеса</h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <Button
@@ -265,7 +265,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-6 rounded-xl flex items-center justify-center gap-2"
                 onClick={onNextSection}
               >
-                Перейти к Патенту и Финансам
+                Перейти к результатам финансового моделирования
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </motion.div>

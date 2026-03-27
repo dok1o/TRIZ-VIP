@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Navigation } from './components/Navigation';
 import { TrizSection } from './components/TrizSection';
 import { HypothesisSection } from './components/HypothesisSection';
+import { FinanceSection } from './components/FinanceSection';
 import { PatentSection } from './components/PatentSection';
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
   };
 
   const handleNextSection = (currentSection: number) => {
-    if (currentSection < 2) {
+    if (currentSection < 3) {
       setExpandedSection(currentSection + 1);
     }
   };
@@ -34,10 +35,16 @@ function App() {
           onExpand={() => setExpandedSection(expandedSection === 1 ? null : 1)}
           onNextSection={() => handleNextSection(1)}
         />
-        <PatentSection 
+        <FinanceSection
           isExpanded={expandedSection === 2}
           isDimmed={expandedSection !== null && expandedSection !== 2}
           onExpand={() => setExpandedSection(expandedSection === 2 ? null : 2)}
+          onNextSection={() => handleNextSection(2)}
+        />
+        <PatentSection 
+          isExpanded={expandedSection === 3}
+          isDimmed={expandedSection !== null && expandedSection !== 3}
+          onExpand={() => setExpandedSection(expandedSection === 3 ? null : 3)}
         />
       </main>
     </div>
