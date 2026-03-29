@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { FileText, Download, Sparkles, Loader2, X, RotateCcw } from 'lucide-react';
 import { Button } from './ui/button';
+import { useI18n } from '../../i18n/I18nProvider';
 
 interface PatentSectionProps {
   isExpanded: boolean;
@@ -12,6 +13,7 @@ interface PatentSectionProps {
 export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPatent, setShowPatent] = useState(false);
+  const { t } = useI18n();
 
   const generatePatent = () => {
     setIsGenerating(true);
@@ -79,8 +81,8 @@ export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionP
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">Отчёт / авторское свидетельство / патент</h2>
-            <p className="text-sm sm:text-base text-slate-600">Нажмите для начала работы</p>
+            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">{t('patent.title')}</h2>
+            <p className="text-sm sm:text-base text-slate-600">{t('patent.cta')}</p>
           </motion.div>
         ) : isDimmed ? (
           <motion.div 
@@ -88,7 +90,7 @@ export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionP
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <h2 className="text-base sm:text-xl text-slate-900">Отчёт / авторское свидетельство / патент</h2>
+            <h2 className="text-base sm:text-xl text-slate-900">{t('patent.title')}</h2>
           </motion.div>
         ) : (
           <motion.div 
@@ -97,7 +99,7 @@ export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionP
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">Отчёт - в форме заявки на авторское свидетельство / патент</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">{t('patent.mainTitle')}</h2>
 
             <div className="grid grid-cols-1 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <Button
@@ -111,12 +113,12 @@ export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionP
                 {isGenerating ? (
                   <>
                     <Loader2 className="w-6 h-6 sm:w-8 sm:h-8 animate-spin" />
-                    <span>Генерация отчета...</span>
+                    <span>{t('patent.generate.generating')}</span>
                   </>
                 ) : (
                   <>
                     <FileText className="w-6 h-6 sm:w-8 sm:h-8" />
-                    <span className="text-base sm:text-lg">Сгенерировать отчет</span>
+                    <span className="text-base sm:text-lg">{t('patent.generate.generate')}</span>
                   </>
                 )}
               </Button>
@@ -139,56 +141,56 @@ export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionP
                           <div className="w-10 h-10 bg-gradient-to-br from-purple-500 to-pink-600 rounded-lg flex items-center justify-center">
                             <FileText className="w-5 h-5 text-white" />
                           </div>
-                          <h3 className="text-xl text-slate-900">Отчет в форме заявки на авторское свидетельство / патент</h3>
+                            <h3 className="text-xl text-slate-900">{t('patent.contentTitle')}</h3>
                         </div>
                         <Button
                           className="bg-white border border-gray-300 hover:border-purple-500 text-slate-700 hover:text-purple-600 px-4 py-2 rounded-lg flex items-center gap-2"
                           onClick={(e) => e.stopPropagation()}
                         >
                           <Download className="w-4 h-4" />
-                          Скачать
+                            {t('patent.download')}
                         </Button>
                       </div>
 
                       <div className="space-y-4 sm:space-y-6 text-sm">
                         <div>
-                          <div className="font-semibold text-slate-900 mb-2">1. Название изобретения</div>
+                          <div className="font-semibold text-slate-900 mb-2">{t('patent.section1.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            Адаптивная система динамической оптимизации технических параметров
+                            {t('patent.section1.text')}
                           </div>
                         </div>
 
                         <div>
-                          <div className="font-semibold text-slate-900 mb-2">2. Область техники</div>
+                          <div className="font-semibold text-slate-900 mb-2">{t('patent.section2.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            Изобретение относится к области автоматизированных систем управления и может быть использовано в промышленном производстве для оптимизации технологических процессов.
+                            {t('patent.section2.text')}
                           </div>
                         </div>
 
                         <div>
-                          <div className="font-semibold text-slate-900 mb-2">3. Техническая проблема</div>
+                          <div className="font-semibold text-slate-900 mb-2">{t('patent.section3.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            Существующие системы не позволяют одновременно оптимизировать скорость и точность без потери общей эффективности системы.
+                            {t('patent.section3.text')}
                           </div>
                         </div>
 
                         <div>
-                          <div className="font-semibold text-slate-900 mb-2">4. Технический результат</div>
+                          <div className="font-semibold text-slate-900 mb-2">{t('patent.section4.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            Повышение производительности системы на 40% при сохранении точности 99.5% за счет применения модульной архитектуры и адаптивных алгоритмов.
+                            {t('patent.section4.text')}
                           </div>
                         </div>
 
                         <div>
-                          <div className="font-semibold text-slate-900 mb-2">5. Формула изобретения</div>
+                          <div className="font-semibold text-slate-900 mb-2">{t('patent.section5.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            Система динамической оптимизации, содержащая модуль анализа, модуль принятия решений и исполнительный модуль, отличающаяся тем, что модуль анализа выполнен с возможностью адаптивного изменения параметров в реальном времени на основе обратной связи от исполнительного модуля.
+                            {t('patent.section5.text')}
                           </div>
                         </div>
 
                         <div className="pt-4 flex items-center gap-2 text-xs text-slate-500">
                           <Sparkles className="w-4 h-4" />
-                          <span>Сгенерировано с помощью AI TRIZ VIP</span>
+                          <span>{t('patent.generatedWith')}</span>
                         </div>
                       </div>
                     </motion.div>
@@ -207,7 +209,7 @@ export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionP
                     onClick={handleReset}
                   >
                     <RotateCcw className="w-5 h-5" />
-                    Начать заново
+                    {t('patent.controls.reset')}
                   </Button>
                 </motion.div>
               </>
@@ -220,8 +222,8 @@ export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionP
                 <div className="w-16 h-16 bg-gradient-to-br from-purple-500 to-pink-600 rounded-2xl flex items-center justify-center mx-auto mb-4 opacity-20">
                   <FileText className="w-8 h-8 text-white" />
                 </div>
-                <h3 className="text-xl text-slate-900 mb-2">Выберите функцию</h3>
-                <p className="text-slate-600">Нажмите на кнопку выше для генерации отчета</p>
+                <h3 className="text-xl text-slate-900 mb-2">{t('patent.empty.title')}</h3>
+                <p className="text-slate-600">{t('patent.empty.subtitle')}</p>
               </motion.div>
             )}
           </motion.div>

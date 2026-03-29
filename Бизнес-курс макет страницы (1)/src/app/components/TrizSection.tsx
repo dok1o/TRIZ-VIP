@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Lightbulb, ArrowRight, Loader2, Brain, Search, AlertTriangle, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from './ui/button';
+import { useI18n } from '../../i18n/I18nProvider';
 
 interface TrizSectionProps {
   isExpanded: boolean;
@@ -16,6 +17,7 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
   const [problem, setProblem] = useState('');
   const [currentStage, setCurrentStage] = useState<Stage>('input');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const { t } = useI18n();
 
   const handleAnalysis = async () => {
     if (!problem.trim()) return;
@@ -50,10 +52,10 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
   };
 
   const stages = [
-    { id: 'input', icon: Lightbulb, label: 'Проблема', color: 'from-blue-500 to-blue-600' },
-    { id: 'analysis', icon: Search, label: 'Анализ', color: 'from-cyan-500 to-cyan-600' },
-    { id: 'contradiction', icon: AlertTriangle, label: 'Соответствие стратегическим целям бизнеса', color: 'from-purple-500 to-purple-600' },
-    { id: 'solution', icon: Brain, label: 'Решение', color: 'from-green-500 to-green-600' },
+    { id: 'input', icon: Lightbulb, label: t('triz.stage.input.label'), color: 'from-blue-500 to-blue-600' },
+    { id: 'analysis', icon: Search, label: t('triz.stage.analysis.label'), color: 'from-cyan-500 to-cyan-600' },
+    { id: 'contradiction', icon: AlertTriangle, label: t('triz.stage.contradiction.label'), color: 'from-purple-500 to-purple-600' },
+    { id: 'solution', icon: Brain, label: t('triz.stage.solution.label'), color: 'from-green-500 to-green-600' },
   ];
 
   const getStageIndex = (stage: Stage) => stages.findIndex(s => s.id === stage);
@@ -112,8 +114,8 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-cyan-400 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <Lightbulb className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">Решение задач ТРИЗ</h2>
-            <p className="text-sm sm:text-base text-slate-600">Нажмите для начала работы</p>
+            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">{t('triz.title')}</h2>
+            <p className="text-sm sm:text-base text-slate-600">{t('triz.cta')}</p>
           </motion.div>
         ) : isDimmed ? (
           <motion.div 
@@ -121,7 +123,7 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <h2 className="text-base sm:text-xl text-slate-900">Решение задач ТРИЗ</h2>
+            <h2 className="text-base sm:text-xl text-slate-900">{t('triz.title')}</h2>
           </motion.div>
         ) : (
           <motion.div 
@@ -130,14 +132,14 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">Решение задач ТРИЗ</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">{t('triz.title')}</h2>
             
             {/* Input Area */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg border border-gray-200 mb-6 sm:mb-8">
-              <label className="block text-slate-700 mb-3 text-sm sm:text-base">Опишите проблему</label>
+              <label className="block text-slate-700 mb-3 text-sm sm:text-base">{t('triz.input.labelProblem')}</label>
               <textarea
                 className="w-full h-24 sm:h-32 px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 resize-none transition-colors"
-                placeholder="Введите описание вашей задачи или проблемы..."
+                placeholder={t('triz.input.placeholderProblem')}
                 value={problem}
                 onChange={(e) => setProblem(e.target.value)}
               />
@@ -149,11 +151,11 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                 {isAnalyzing ? (
                   <>
                     <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                    AI анализирует...
+                    {t('triz.input.buttonAnalyzing')}
                   </>
                 ) : (
                   <>
-                    Начать анализ
+                    {t('triz.input.buttonAnalyze')}
                     <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                   </>
                 )}
@@ -230,11 +232,11 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                           <Search className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-lg sm:text-xl text-slate-900 mb-3">Этап 1: Анализ проблемы</h3>
+                          <h3 className="text-lg sm:text-xl text-slate-900 mb-3">{t('triz.stage1.title')}</h3>
                           {isAnalyzing ? (
                             <div className="flex items-center gap-2 text-cyan-600">
                               <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                              <span className="text-sm sm:text-base">AI анализирует вашу проблему...</span>
+                              <span className="text-sm sm:text-base">{t('triz.stage1.aiAnalyzing')}</span>
                             </div>
                           ) : (
                             <>
@@ -243,19 +245,19 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                               </div>
                               <div className="space-y-3 sm:space-y-4">
                                 <div>
-                                  <div className="text-sm sm:text-base font-semibold text-slate-900 mb-2">Ключевые параметры:</div>
+                                  <div className="text-sm sm:text-base font-semibold text-slate-900 mb-2">{t('triz.stage1.parametersTitle')}</div>
                                   <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-slate-600">
                                     <li className="flex items-start gap-2">
                                       <span className="text-cyan-500 mt-1 flex-shrink-0">•</span>
-                                      <span>Скорость выполнения операции</span>
+                                      <span>{t('triz.stage1.param1')}</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                       <span className="text-cyan-500 mt-1 flex-shrink-0">•</span>
-                                      <span>Точность результата</span>
+                                      <span>{t('triz.stage1.param2')}</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                       <span className="text-cyan-500 mt-1 flex-shrink-0">•</span>
-                                      <span>Энергоэффективность системы</span>
+                                      <span>{t('triz.stage1.param3')}</span>
                                     </li>
                                   </ul>
                                 </div>
@@ -275,21 +277,21 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                           <AlertTriangle className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-lg sm:text-xl text-slate-900 mb-3">Этап 2: Выявление противоречия</h3>
+                          <h3 className="text-lg sm:text-xl text-slate-900 mb-3">{t('triz.stage2.title')}</h3>
                           <div className="bg-purple-50 p-3 sm:p-4 rounded-lg mb-3 sm:mb-4">
-                            <div className="text-sm sm:text-base font-semibold text-purple-900 mb-2">Техническое противоречие:</div>
+                            <div className="text-sm sm:text-base font-semibold text-purple-900 mb-2">{t('triz.stage2.technicalContradictionLabel')}</div>
                             <p className="text-sm sm:text-base text-slate-700">
-                              При увеличении скорости снижается точность, а при повышении точности падает скорость выполнения операции.
+                              {t('triz.stage2.technicalContradictionText')}
                             </p>
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <div className="bg-red-50 border border-red-200 p-3 sm:p-4 rounded-lg">
-                              <div className="text-sm font-semibold text-red-900 mb-2">Конфликт ↑</div>
-                              <p className="text-xs sm:text-sm text-slate-600">Скорость ↑ → Точность ↓</p>
+                              <div className="text-sm font-semibold text-red-900 mb-2">{t('triz.stage2.conflictUpTitle')}</div>
+                              <p className="text-xs sm:text-sm text-slate-600">{t('triz.stage2.conflictUpText')}</p>
                             </div>
                             <div className="bg-orange-50 border border-orange-200 p-3 sm:p-4 rounded-lg">
-                              <div className="text-sm font-semibold text-orange-900 mb-2">Конфликт ↓</div>
-                              <p className="text-xs sm:text-sm text-slate-600">Точность ↑ → Скорость ↓</p>
+                              <div className="text-sm font-semibold text-orange-900 mb-2">{t('triz.stage2.conflictDownTitle')}</div>
+                              <p className="text-xs sm:text-sm text-slate-600">{t('triz.stage2.conflictDownText')}</p>
                             </div>
                           </div>
                         </div>
@@ -305,32 +307,32 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                           <Brain className="w-5 h-5 text-white" />
                         </div>
                         <div className="flex-1 min-w-0">
-                          <h3 className="text-lg sm:text-xl text-slate-900 mb-3">Этап 3: Решение на основе ТРИЗ</h3>
+                          <h3 className="text-lg sm:text-xl text-slate-900 mb-3">{t('triz.stage3.title')}</h3>
                           <div className="bg-green-50 border border-green-200 p-3 sm:p-4 rounded-lg mb-3 sm:mb-4">
-                            <div className="text-sm sm:text-base font-semibold text-green-900 mb-2">Принцип разделения:</div>
+                            <div className="text-sm sm:text-base font-semibold text-green-900 mb-2">{t('triz.stage3.divisionPrincipleLabel')}</div>
                             <p className="text-sm sm:text-base text-slate-700 mb-3 sm:mb-4">
-                              Разделить процесс на два независимых модуля: быстрый предварительный анализ и точная финальная обработка.
+                              {t('triz.stage3.divisionPrincipleText')}
                             </p>
-                            <div className="text-sm sm:text-base font-semibold text-green-900 mb-2">Техническое решение:</div>
+                            <div className="text-sm sm:text-base font-semibold text-green-900 mb-2">{t('triz.stage3.technicalSolutionLabel')}</div>
                             <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-slate-600">
                               <li className="flex items-start gap-2">
                                 <span className="text-green-500 mt-1 flex-shrink-0">✓</span>
-                                <span>Модуль быстрой предварительной оценки (скорость +80%)</span>
+                                <span>{t('triz.stage3.bullet1')}</span>
                               </li>
                               <li className="flex items-start gap-2">
                                 <span className="text-green-500 mt-1 flex-shrink-0">✓</span>
-                                <span>Модуль точной обработки критических параметров (точность 99.5%)</span>
+                                <span>{t('triz.stage3.bullet2')}</span>
                               </li>
                               <li className="flex items-start gap-2">
                                 <span className="text-green-500 mt-1 flex-shrink-0">✓</span>
-                                <span>Адаптивный алгоритм выбора режима работы</span>
+                                <span>{t('triz.stage3.bullet3')}</span>
                               </li>
                             </ul>
                           </div>
                           <div className="bg-gradient-to-r from-green-500 to-green-600 p-3 sm:p-4 rounded-lg text-white">
-                            <div className="text-sm sm:text-base font-semibold mb-2">Ожидаемый результат:</div>
+                            <div className="text-sm sm:text-base font-semibold mb-2">{t('triz.stage3.expectedResultLabel')}</div>
                             <p className="text-xs sm:text-sm text-green-50">
-                              Повышение общей производительности на 40% при сохранении высокой точности для критических операций.
+                              {t('triz.stage3.expectedResultText')}
                             </p>
                           </div>
                         </div>
@@ -351,7 +353,7 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                         className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-white hover:bg-gray-50 text-slate-700 border border-gray-300 rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors order-2 sm:order-1"
                       >
                         <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5" />
-                        Назад
+                        {t('triz.controls.back')}
                       </Button>
 
                       <Button
@@ -359,7 +361,7 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                         className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-white hover:bg-gray-50 text-slate-700 border border-gray-300 rounded-xl flex items-center justify-center gap-2 transition-colors order-1 sm:order-2"
                       >
                         <X className="w-4 h-4 sm:w-5 sm:h-5" />
-                        Начать заново
+                        {t('triz.controls.reset')}
                       </Button>
 
                       {currentIndex >= stages.length - 1 ? (
@@ -367,7 +369,7 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                           onClick={onNextSection}
                           className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white rounded-xl flex items-center justify-center gap-2 transition-colors order-3"
                         >
-                          Перейти к стратегическим целям бизнеса
+                          {t('triz.controls.goToStrategic')}
                           <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
                         </Button>
                       ) : (
@@ -376,7 +378,7 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                           disabled={currentIndex >= stages.length - 1}
                           className="px-4 sm:px-6 py-2 sm:py-3 text-sm sm:text-base bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white rounded-xl flex items-center justify-center gap-2 disabled:opacity-40 disabled:cursor-not-allowed transition-colors order-3"
                         >
-                          Далее
+                          {t('triz.controls.next')}
                           <ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                         </Button>
                       )}

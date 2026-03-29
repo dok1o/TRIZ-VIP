@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { Network, Upload, Plus, Sparkles, ArrowRight, X } from 'lucide-react';
 import { Button } from './ui/button';
+import { useI18n } from '../../i18n/I18nProvider';
 
 interface HypothesisSectionProps {
   isExpanded: boolean;
@@ -12,17 +13,18 @@ interface HypothesisSectionProps {
 
 interface Node {
   id: number;
-  text: string;
+  textKey: string;
   x: number;
   y: number;
   color: string;
 }
 
 export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSection }: HypothesisSectionProps) {
+  const { t } = useI18n();
   const [nodes, setNodes] = useState<Node[]>([
-    { id: 1, text: 'Основная гипотеза', x: 50, y: 30, color: 'from-blue-500 to-blue-600' },
-    { id: 2, text: 'Техническое решение', x: 25, y: 60, color: 'from-cyan-500 to-cyan-600' },
-    { id: 3, text: 'Рыночная стратегия', x: 75, y: 60, color: 'from-purple-500 to-purple-600' },
+    { id: 1, textKey: 'hypothesis.node.primary', x: 50, y: 30, color: 'from-blue-500 to-blue-600' },
+    { id: 2, textKey: 'hypothesis.node.technicalSolution', x: 25, y: 60, color: 'from-cyan-500 to-cyan-600' },
+    { id: 3, textKey: 'hypothesis.node.marketStrategy', x: 75, y: 60, color: 'from-purple-500 to-purple-600' },
   ]);
 
   const [isGenerating, setIsGenerating] = useState(false);
@@ -32,7 +34,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
     setTimeout(() => {
       const newNode: Node = {
         id: nodes.length + 1,
-        text: 'Новая гипотеза',
+        textKey: 'hypothesis.node.new',
         x: 50,
         y: 80,
         color: 'from-green-500 to-green-600',
@@ -95,8 +97,8 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-cyan-500 to-blue-600 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <Network className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">Соответствие стратегическим целям бизнеса</h2>
-            <p className="text-sm sm:text-base text-slate-600">Нажмите для начала работы</p>
+            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">{t('hypothesis.title')}</h2>
+            <p className="text-sm sm:text-base text-slate-600">{t('hypothesis.cta')}</p>
           </motion.div>
         ) : isDimmed ? (
           <motion.div 
@@ -104,7 +106,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
           >
-            <h2 className="text-base sm:text-xl text-slate-900">Соответствие стратегическим целям бизнеса</h2>
+            <h2 className="text-base sm:text-xl text-slate-900">{t('hypothesis.title')}</h2>
           </motion.div>
         ) : (
           <motion.div 
@@ -113,7 +115,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
           >
-            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">Соответствие стратегическим целям бизнеса</h2>
+            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">{t('hypothesis.title')}</h2>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6 mb-6 sm:mb-8">
               <Button
@@ -123,7 +125,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
                 }}
               >
                 <Upload className="w-5 h-5" />
-                Загрузить изображение
+                {t('hypothesis.input.loadImage')}
               </Button>
 
               <Button
@@ -137,12 +139,12 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
                 {isGenerating ? (
                   <>
                     <Sparkles className="w-5 h-5 animate-pulse" />
-                    Генерация...
+                    {t('hypothesis.input.buttonGenerating')}
                   </>
                 ) : (
                   <>
                     <Sparkles className="w-5 h-5" />
-                    Сгенерировать гипотезу
+                    {t('hypothesis.input.buttonGenerate')}
                   </>
                 )}
               </Button>
@@ -154,7 +156,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
                 }}
               >
                 <Plus className="w-5 h-5" />
-                Добавить узел
+                {t('hypothesis.input.buttonAddNode')}
               </Button>
             </div>
 
@@ -205,7 +207,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
                         className={`bg-gradient-to-br ${node.color} text-white px-3 py-2 rounded-lg text-xs whitespace-nowrap flex items-center justify-center shadow-lg`}
                         style={{ fontSize: '3px' }}
                       >
-                        {node.text}
+                        {t(node.textKey)}
                       </div>
                     </motion.foreignObject>
                   </g>
@@ -223,9 +225,9 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
                   <div className="flex items-start gap-2">
                     <Sparkles className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <div>
-                      <div className="font-semibold mb-1">AI-подсказка</div>
+                      <div className="font-semibold mb-1">{t('hypothesis.aiTipTitle')}</div>
                       <div className="text-sm text-purple-100">
-                        Рассмотрите связь между технической реализацией и маркетинговой стратегией для повышения эффективности
+                        {t('hypothesis.aiTipText')}
                       </div>
                     </div>
                   </div>
@@ -241,16 +243,16 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
               transition={{ delay: 1.2 }}
             >
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
-                <div className="text-sm text-slate-600 mb-1">Всего гипотез</div>
+                <div className="text-sm text-slate-600 mb-1">{t('hypothesis.stats.total')}</div>
                 <div className="text-2xl text-slate-900">{nodes.length}</div>
               </div>
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
-                <div className="text-sm text-slate-600 mb-1">Связей</div>
+                <div className="text-sm text-slate-600 mb-1">{t('hypothesis.stats.links')}</div>
                 <div className="text-2xl text-slate-900">{Math.max(0, nodes.length - 1)}</div>
               </div>
               <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-green-200 bg-green-50/50">
-                <div className="text-sm text-green-700 mb-1">Приоритет</div>
-                <div className="text-2xl text-green-600">Высокий</div>
+                <div className="text-sm text-green-700 mb-1">{t('hypothesis.stats.priority')}</div>
+                <div className="text-2xl text-green-600">{t('hypothesis.stats.priorityValue')}</div>
               </div>
             </motion.div>
 
@@ -265,7 +267,7 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
                 className="w-full bg-gradient-to-r from-green-500 to-green-600 hover:from-green-600 hover:to-green-700 text-white py-6 rounded-xl flex items-center justify-center gap-2"
                 onClick={onNextSection}
               >
-                Перейти к результатам финансового моделирования
+                {t('hypothesis.controls.nextToFinance')}
                 <ArrowRight className="w-5 h-5" />
               </Button>
             </motion.div>

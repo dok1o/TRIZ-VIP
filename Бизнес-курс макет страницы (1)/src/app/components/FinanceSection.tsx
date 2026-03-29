@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, DollarSign, PieChart, Sparkles, TrendingUp, X } from 'lucide-react';
 import { Button } from './ui/button';
+import { useI18n } from '../../i18n/I18nProvider';
 
 interface FinanceSectionProps {
   isExpanded: boolean;
@@ -12,6 +13,7 @@ interface FinanceSectionProps {
 
 export function FinanceSection({ isExpanded, isDimmed, onExpand, onNextSection }: FinanceSectionProps) {
   const [showForecast, setShowForecast] = useState(false);
+  const { t } = useI18n();
 
   return (
     <motion.section
@@ -60,17 +62,17 @@ export function FinanceSection({ isExpanded, isDimmed, onExpand, onNextSection }
             <div className="w-12 h-12 sm:w-16 sm:h-16 bg-gradient-to-br from-blue-500 to-cyan-500 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4">
               <DollarSign className="w-6 h-6 sm:w-8 sm:h-8 text-white" />
             </div>
-            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">Результат финансового моделирования / прогнозирования</h2>
-            <p className="text-sm sm:text-base text-slate-600">Нажмите для начала работы</p>
+            <h2 className="text-2xl sm:text-3xl mb-2 text-slate-900">{t('finance.title')}</h2>
+            <p className="text-sm sm:text-base text-slate-600">{t('finance.cta')}</p>
           </motion.div>
         ) : isDimmed ? (
           <motion.div className="text-center" initial={{ opacity: 0 }} animate={{ opacity: 1 }}>
-            <h2 className="text-base sm:text-xl text-slate-900">Результат финансового моделирования / прогнозирования</h2>
+            <h2 className="text-base sm:text-xl text-slate-900">{t('finance.title')}</h2>
           </motion.div>
         ) : (
           <motion.div className="w-full max-w-6xl mx-auto pb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
             <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">
-              Результат финансового моделирования / прогнозирования
+              {t('finance.title')}
             </h2>
 
             <Button
@@ -78,7 +80,7 @@ export function FinanceSection({ isExpanded, isDimmed, onExpand, onNextSection }
               onClick={() => setShowForecast(true)}
             >
               <Sparkles className="w-5 h-5" />
-              Построить прогноз
+              {t('finance.button.buildForecast')}
             </Button>
 
             {showForecast && (
@@ -86,23 +88,23 @@ export function FinanceSection({ isExpanded, isDimmed, onExpand, onNextSection }
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
                   <div className="flex items-center gap-2 text-slate-600 mb-2">
                     <DollarSign className="w-4 h-4" />
-                    Выручка (12 мес)
+                    {t('finance.forecast.revenueLabel')}
                   </div>
                   <div className="text-2xl text-slate-900">$150,000</div>
                 </div>
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
                   <div className="flex items-center gap-2 text-slate-600 mb-2">
                     <PieChart className="w-4 h-4" />
-                    ROI
+                    {t('finance.forecast.roiLabel')}
                   </div>
                   <div className="text-2xl text-green-600">200%</div>
                 </div>
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
                   <div className="flex items-center gap-2 text-slate-600 mb-2">
                     <TrendingUp className="w-4 h-4" />
-                    Окупаемость
+                    {t('finance.forecast.paybackLabel')}
                   </div>
-                  <div className="text-2xl text-blue-600">6 мес</div>
+                  <div className="text-2xl text-blue-600">{t('finance.forecast.paybackValue')}</div>
                 </div>
               </div>
             )}
@@ -111,7 +113,7 @@ export function FinanceSection({ isExpanded, isDimmed, onExpand, onNextSection }
               className="w-full bg-gradient-to-r from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white py-6 rounded-xl flex items-center justify-center gap-2"
               onClick={onNextSection}
             >
-              Перейти к отчёту
+              {t('finance.controls.goToReport')}
               <ArrowRight className="w-5 h-5" />
             </Button>
           </motion.div>
