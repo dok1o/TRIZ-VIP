@@ -49,14 +49,24 @@ export async function fetchCase(params: {
   };
   if (params.caseName) body.caseName = params.caseName;
 
-  const apiBase = (import.meta as any)?.env?.VITE_API_BASE ? String((import.meta as any).env.VITE_API_BASE) : "";
-  const url = `${apiBase}/api/case`.replace(/\/{2,}/g, "/").replace(":/", "://");
+  const apiBase = (import.meta as any)?.env?.VITE_API_BASE
+    ? String((import.meta as any).env.VITE_API_BASE).trim().replace(/\/$/, "")
+    : "";
+  const url = apiBase ? `${apiBase}/api/case` : "/api/case";
 
-  const resp = await fetch(url, {
-    method: "POST",
-    headers: { "content-type": "application/json" },
-    body: JSON.stringify(body),
-  });
+  let resp: Response;
+  try {
+    resp = await fetch(url, {
+      method: "POST",
+      headers: { "content-type": "application/json" },
+      body: JSON.stringify(body),
+    });
+  } catch (e) {
+    const hint = apiBase
+      ? `Проверь API ${apiBase}, CORS ALLOWED_ORIGIN и что сервис не «спит» на Free.`
+      : "VITE_API_BASE не задан: запрос уходит на фронт. Пересобери web на Render с VITE_API_BASE.";
+    throw new Error(e instanceof Error ? `${e.message}. ${hint}` : `Network error. ${hint}`);
+  }
 
   const json = await resp.json().catch(() => null);
   if (!resp.ok) {

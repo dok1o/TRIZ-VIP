@@ -4,18 +4,24 @@ import cors from "cors";
 const app = express();
 
 const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "*";
+function normalizeOrigin(origin) {
+  const s = String(origin).trim();
+  if (!s || s === "*") return s;
+  return s.replace(/\/$/, "");
+}
 const corsOrigins =
   allowedOrigin === "*"
     ? true
     : allowedOrigin
         .split(",")
-        .map((s) => s.trim())
+        .map((s) => normalizeOrigin(s))
         .filter(Boolean);
 app.use(
   cors({
     origin: corsOrigins,
     methods: ["GET", "POST", "OPTIONS"],
-    allowedHeaders: ["Content-Type"],
+    allowedHeaders: ["Content-Type", "Accept"],
+    optionsSuccessStatus: 204,
   }),
 );
 
