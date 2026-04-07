@@ -3,14 +3,17 @@ import { motion } from 'motion/react';
 import { FileText, Download, Sparkles, Loader2, X, RotateCcw } from 'lucide-react';
 import { Button } from './ui/button';
 import { useI18n } from '../../i18n/I18nProvider';
+import { patentEmptySubtitle, patentSectionBody } from '../../i18n/trizCaseCopy';
+import type { CasePreset } from '../../ollamaCase';
 
 interface PatentSectionProps {
   isExpanded: boolean;
   isDimmed: boolean;
   onExpand: () => void;
+  casePreset: CasePreset;
 }
 
-export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionProps) {
+export function PatentSection({ isExpanded, isDimmed, onExpand, casePreset }: PatentSectionProps) {
   const [isGenerating, setIsGenerating] = useState(false);
   const [showPatent, setShowPatent] = useState(false);
   const { t } = useI18n();
@@ -156,35 +159,35 @@ export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionP
                         <div>
                           <div className="font-semibold text-slate-900 mb-2">{t('patent.section1.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            {t('patent.section1.text')}
+                            {patentSectionBody(t, casePreset, 1)}
                           </div>
                         </div>
 
                         <div>
                           <div className="font-semibold text-slate-900 mb-2">{t('patent.section2.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            {t('patent.section2.text')}
+                            {patentSectionBody(t, casePreset, 2)}
                           </div>
                         </div>
 
                         <div>
                           <div className="font-semibold text-slate-900 mb-2">{t('patent.section3.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            {t('patent.section3.text')}
+                            {patentSectionBody(t, casePreset, 3)}
                           </div>
                         </div>
 
                         <div>
                           <div className="font-semibold text-slate-900 mb-2">{t('patent.section4.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            {t('patent.section4.text')}
+                            {patentSectionBody(t, casePreset, 4)}
                           </div>
                         </div>
 
                         <div>
                           <div className="font-semibold text-slate-900 mb-2">{t('patent.section5.title')}</div>
                           <div className="text-slate-600 bg-purple-50 p-3 rounded-lg">
-                            {t('patent.section5.text')}
+                            {patentSectionBody(t, casePreset, 5)}
                           </div>
                         </div>
 
@@ -223,7 +226,7 @@ export function PatentSection({ isExpanded, isDimmed, onExpand }: PatentSectionP
                   <FileText className="w-8 h-8 text-white" />
                 </div>
                 <h3 className="text-xl text-slate-900 mb-2">{t('patent.empty.title')}</h3>
-                <p className="text-slate-600">{t('patent.empty.subtitle')}</p>
+                <p className="text-slate-600">{patentEmptySubtitle(t, casePreset)}</p>
               </motion.div>
             )}
           </motion.div>

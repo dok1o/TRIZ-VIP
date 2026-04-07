@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import type { CasePreset } from '../ollamaCase';
 import { Navigation } from './components/Navigation';
 import { TrizSection } from './components/TrizSection';
 import { HypothesisSection } from './components/HypothesisSection';
@@ -7,6 +8,7 @@ import { PatentSection } from './components/PatentSection';
 
 function App() {
   const [expandedSection, setExpandedSection] = useState<number | null>(null);
+  const [casePreset, setCasePreset] = useState<CasePreset>('custom');
 
   const handleHomeClick = () => {
     setExpandedSection(null);
@@ -28,6 +30,8 @@ function App() {
           isDimmed={expandedSection !== null && expandedSection !== 0}
           onExpand={() => setExpandedSection(expandedSection === 0 ? null : 0)}
           onNextSection={() => handleNextSection(0)}
+          casePreset={casePreset}
+          onCasePresetChange={setCasePreset}
         />
         <HypothesisSection 
           isExpanded={expandedSection === 1}
@@ -40,11 +44,13 @@ function App() {
           isDimmed={expandedSection !== null && expandedSection !== 2}
           onExpand={() => setExpandedSection(expandedSection === 2 ? null : 2)}
           onNextSection={() => handleNextSection(2)}
+          casePreset={casePreset}
         />
         <PatentSection 
           isExpanded={expandedSection === 3}
           isDimmed={expandedSection !== null && expandedSection !== 3}
           onExpand={() => setExpandedSection(expandedSection === 3 ? null : 3)}
+          casePreset={casePreset}
         />
       </main>
     </div>

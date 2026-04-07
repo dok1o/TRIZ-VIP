@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { motion } from 'motion/react';
 import { Network, Upload, Plus, Sparkles, ArrowRight, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { useI18n } from '../../i18n/I18nProvider';
+import { TRIZ_CASE_CLEAR, TRIZ_CASE_FILL, type CaseResult } from '../../ollamaCase';
 
 interface HypothesisSectionProps {
   isExpanded: boolean;
@@ -28,6 +29,21 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
   ]);
 
   const [isGenerating, setIsGenerating] = useState(false);
+  const [strategyFromAi, setStrategyFromAi] = useState<string | null>(null);
+
+  useEffect(() => {
+    const onFill = (e: Event) => {
+      const d = (e as CustomEvent<CaseResult>).detail;
+      if (d?.strategy?.trim()) setStrategyFromAi(d.strategy);
+    };
+    const onClear = () => setStrategyFromAi(null);
+    window.addEventListener(TRIZ_CASE_FILL, onFill as EventListener);
+    window.addEventListener(TRIZ_CASE_CLEAR, onClear);
+    return () => {
+      window.removeEventListener(TRIZ_CASE_FILL, onFill as EventListener);
+      window.removeEventListener(TRIZ_CASE_CLEAR, onClear);
+    };
+  }, []);
 
   const generateHypothesis = () => {
     setIsGenerating(true);
@@ -226,8 +242,8 @@ export function HypothesisSection({ isExpanded, isDimmed, onExpand, onNextSectio
                     <Sparkles className="w-5 h-5 flex-shrink-0 mt-0.5" />
                     <div>
                       <div className="font-semibold mb-1">{t('hypothesis.aiTipTitle')}</div>
-                      <div className="text-sm text-purple-100">
-                        {t('hypothesis.aiTipText')}
+                      <div className="text-sm text-purple-100" id="strategy">
+                        {strategyFromAi ?? t('hypothesis.aiTipText')}
                       </div>
                     </div>
                   </div>

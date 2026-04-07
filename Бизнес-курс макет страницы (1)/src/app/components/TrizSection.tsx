@@ -3,21 +3,41 @@ import { motion, AnimatePresence } from 'motion/react';
 import { Lightbulb, ArrowRight, Loader2, Brain, Search, AlertTriangle, ChevronLeft, ChevronRight, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { useI18n } from '../../i18n/I18nProvider';
+import {
+  dispatchTrizCaseClear,
+  dispatchTrizCaseFill,
+  fetchCase,
+  type CasePreset,
+  type CaseResult,
+} from '../../ollamaCase';
+import { trizCaseField } from '../../i18n/trizCaseCopy';
 
 interface TrizSectionProps {
   isExpanded: boolean;
   isDimmed: boolean;
   onExpand: () => void;
   onNextSection: () => void;
+  casePreset: CasePreset;
+  onCasePresetChange: (preset: CasePreset) => void;
 }
 
 type Stage = 'input' | 'analysis' | 'contradiction' | 'solution';
 
-export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: TrizSectionProps) {
+export function TrizSection({
+  isExpanded,
+  isDimmed,
+  onExpand,
+  onNextSection,
+  casePreset,
+  onCasePresetChange,
+}: TrizSectionProps) {
   const [problem, setProblem] = useState('');
   const [currentStage, setCurrentStage] = useState<Stage>('input');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const { t } = useI18n();
+  const [isRunningCase, setIsRunningCase] = useState(false);
+  const [aiCase, setAiCase] = useState<CaseResult | null>(null);
+  const [caseError, setCaseError] = useState<string | null>(null);
+  const { t, lang } = useI18n();
 
   const handleAnalysis = async () => {
     if (!problem.trim()) return;
@@ -29,6 +49,30 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
     setTimeout(() => {
       setIsAnalyzing(false);
     }, 1500);
+  };
+
+  const handleRunCase = async () => {
+    const input = problem.trim();
+    if (casePreset === 'custom' && !input) return;
+
+    setIsRunningCase(true);
+    setCaseError(null);
+    try {
+      const result = await fetchCase({
+        input,
+        lang,
+        caseName: casePreset === 'custom' ? undefined : casePreset,
+      });
+      setAiCase(result);
+      dispatchTrizCaseFill(result);
+      setCurrentStage('analysis');
+      setIsAnalyzing(false);
+    } catch (e) {
+      const msg = e instanceof Error ? e.message : 'Request failed';
+      setCaseError(msg);
+    } finally {
+      setIsRunningCase(false);
+    }
   };
 
   const handleNext = () => {
@@ -49,7 +93,28 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
     setCurrentStage('input');
     setProblem('');
     setIsAnalyzing(false);
+    setAiCase(null);
+    setCaseError(null);
+    dispatchTrizCaseClear();
   };
+
+  const problemDisplay = (aiCase?.problem?.trim() ? aiCase.problem : problem) || '';
+  const contradictionDisplay = aiCase?.contradiction?.trim()
+    ? aiCase.contradiction
+    : trizCaseField(t, casePreset, 'contradictionText');
+  const solutionDisplay = aiCase?.solution?.trim()
+    ? aiCase.solution
+    : trizCaseField(t, casePreset, 'divisionText');
+
+  const param1D = trizCaseField(t, casePreset, 'param1');
+  const param2D = trizCaseField(t, casePreset, 'param2');
+  const param3D = trizCaseField(t, casePreset, 'param3');
+  const conflictUpD = trizCaseField(t, casePreset, 'conflictUp');
+  const conflictDownD = trizCaseField(t, casePreset, 'conflictDown');
+  const bullet1D = trizCaseField(t, casePreset, 'bullet1');
+  const bullet2D = trizCaseField(t, casePreset, 'bullet2');
+  const bullet3D = trizCaseField(t, casePreset, 'bullet3');
+  const expectedD = trizCaseField(t, casePreset, 'emptyResult');
 
   const stages = [
     { id: 'input', icon: Lightbulb, label: t('triz.stage.input.label'), color: 'from-blue-500 to-blue-600' },
@@ -136,6 +201,17 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
             
             {/* Input Area */}
             <div className="bg-white/80 backdrop-blur-sm rounded-2xl p-4 sm:p-6 md:p-8 shadow-lg border border-gray-200 mb-6 sm:mb-8">
+              <label className="block text-slate-700 mb-2 text-sm sm:text-base">{t('triz.case.presetLabel')}</label>
+              <select
+                className="w-full mb-4 px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 bg-white"
+                value={casePreset}
+                onChange={(e) => onCasePresetChange(e.target.value as CasePreset)}
+              >
+                <option value="custom">{t('triz.case.custom')}</option>
+                <option value="water_cut_oil_fields">{t('triz.case.water_cut_oil_fields')}</option>
+                <option value="cubesat_thermal">{t('triz.case.cubesat_thermal')}</option>
+                <option value="mining_tailings_recovery">{t('triz.case.mining_tailings_recovery')}</option>
+              </select>
               <label className="block text-slate-700 mb-3 text-sm sm:text-base">{t('triz.input.labelProblem')}</label>
               <textarea
                 className="w-full h-24 sm:h-32 px-3 py-2 sm:px-4 sm:py-3 text-sm sm:text-base border-2 border-gray-200 rounded-xl focus:outline-none focus:border-blue-500 resize-none transition-colors"
@@ -143,23 +219,46 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                 value={problem}
                 onChange={(e) => setProblem(e.target.value)}
               />
-              <Button
-                className="mt-4 bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white px-6 sm:px-8 py-4 sm:py-6 text-sm sm:text-base rounded-xl flex items-center gap-2 w-full sm:w-auto"
-                onClick={handleAnalysis}
-                disabled={!problem.trim() || isAnalyzing}
-              >
-                {isAnalyzing ? (
-                  <>
-                    <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
-                    {t('triz.input.buttonAnalyzing')}
-                  </>
-                ) : (
-                  <>
-                    {t('triz.input.buttonAnalyze')}
-                    <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
-                  </>
-                )}
-              </Button>
+              <div className="mt-4 flex flex-col sm:flex-row gap-3">
+                <Button
+                  className="bg-gradient-to-r from-blue-500 to-cyan-400 hover:from-blue-600 hover:to-cyan-500 text-white px-6 sm:px-8 py-4 sm:py-6 text-sm sm:text-base rounded-xl flex items-center gap-2 w-full sm:w-auto"
+                  onClick={handleAnalysis}
+                  disabled={!problem.trim() || isAnalyzing}
+                >
+                  {isAnalyzing ? (
+                    <>
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                      {t('triz.input.buttonAnalyzing')}
+                    </>
+                  ) : (
+                    <>
+                      {t('triz.input.buttonAnalyze')}
+                      <ArrowRight className="w-4 h-4 sm:w-5 sm:h-5" />
+                    </>
+                  )}
+                </Button>
+
+                <Button
+                  id="runCaseBtn"
+                  className="bg-slate-900 hover:bg-slate-800 text-white px-6 sm:px-8 py-4 sm:py-6 text-sm sm:text-base rounded-xl flex items-center justify-center gap-2 w-full sm:w-auto"
+                  onClick={handleRunCase}
+                  disabled={(casePreset === 'custom' && !problem.trim()) || isRunningCase}
+                >
+                  {isRunningCase ? (
+                    <>
+                      <Loader2 className="w-4 h-4 sm:w-5 sm:h-5 animate-spin" />
+                      Run Case
+                    </>
+                  ) : (
+                    <>Run Case</>
+                  )}
+                </Button>
+              </div>
+              {caseError ? (
+                <p className="mt-3 text-sm text-red-600" role="alert">
+                  {caseError}
+                </p>
+              ) : null}
             </div>
 
             {/* Progress Tracker */}
@@ -241,7 +340,9 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                           ) : (
                             <>
                               <div className="bg-cyan-50 p-3 sm:p-4 rounded-lg mb-3 sm:mb-4">
-                                <p className="text-sm sm:text-base text-slate-700">{problem}</p>
+                                <p className="text-sm sm:text-base text-slate-700" id="problem">
+                                  {problemDisplay}
+                                </p>
                               </div>
                               <div className="space-y-3 sm:space-y-4">
                                 <div>
@@ -249,15 +350,15 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                                   <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-slate-600">
                                     <li className="flex items-start gap-2">
                                       <span className="text-cyan-500 mt-1 flex-shrink-0">•</span>
-                                      <span>{t('triz.stage1.param1')}</span>
+                                      <span>{param1D}</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                       <span className="text-cyan-500 mt-1 flex-shrink-0">•</span>
-                                      <span>{t('triz.stage1.param2')}</span>
+                                      <span>{param2D}</span>
                                     </li>
                                     <li className="flex items-start gap-2">
                                       <span className="text-cyan-500 mt-1 flex-shrink-0">•</span>
-                                      <span>{t('triz.stage1.param3')}</span>
+                                      <span>{param3D}</span>
                                     </li>
                                   </ul>
                                 </div>
@@ -280,18 +381,18 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                           <h3 className="text-lg sm:text-xl text-slate-900 mb-3">{t('triz.stage2.title')}</h3>
                           <div className="bg-purple-50 p-3 sm:p-4 rounded-lg mb-3 sm:mb-4">
                             <div className="text-sm sm:text-base font-semibold text-purple-900 mb-2">{t('triz.stage2.technicalContradictionLabel')}</div>
-                            <p className="text-sm sm:text-base text-slate-700">
-                              {t('triz.stage2.technicalContradictionText')}
+                            <p className="text-sm sm:text-base text-slate-700" id="contradiction">
+                              {contradictionDisplay}
                             </p>
                           </div>
                           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4">
                             <div className="bg-red-50 border border-red-200 p-3 sm:p-4 rounded-lg">
                               <div className="text-sm font-semibold text-red-900 mb-2">{t('triz.stage2.conflictUpTitle')}</div>
-                              <p className="text-xs sm:text-sm text-slate-600">{t('triz.stage2.conflictUpText')}</p>
+                              <p className="text-xs sm:text-sm text-slate-600">{conflictUpD}</p>
                             </div>
                             <div className="bg-orange-50 border border-orange-200 p-3 sm:p-4 rounded-lg">
                               <div className="text-sm font-semibold text-orange-900 mb-2">{t('triz.stage2.conflictDownTitle')}</div>
-                              <p className="text-xs sm:text-sm text-slate-600">{t('triz.stage2.conflictDownText')}</p>
+                              <p className="text-xs sm:text-sm text-slate-600">{conflictDownD}</p>
                             </div>
                           </div>
                         </div>
@@ -310,30 +411,28 @@ export function TrizSection({ isExpanded, isDimmed, onExpand, onNextSection }: T
                           <h3 className="text-lg sm:text-xl text-slate-900 mb-3">{t('triz.stage3.title')}</h3>
                           <div className="bg-green-50 border border-green-200 p-3 sm:p-4 rounded-lg mb-3 sm:mb-4">
                             <div className="text-sm sm:text-base font-semibold text-green-900 mb-2">{t('triz.stage3.divisionPrincipleLabel')}</div>
-                            <p className="text-sm sm:text-base text-slate-700 mb-3 sm:mb-4">
-                              {t('triz.stage3.divisionPrincipleText')}
+                            <p className="text-sm sm:text-base text-slate-700 mb-3 sm:mb-4" id="solution">
+                              {solutionDisplay}
                             </p>
                             <div className="text-sm sm:text-base font-semibold text-green-900 mb-2">{t('triz.stage3.technicalSolutionLabel')}</div>
                             <ul className="space-y-1.5 sm:space-y-2 text-sm sm:text-base text-slate-600">
                               <li className="flex items-start gap-2">
                                 <span className="text-green-500 mt-1 flex-shrink-0">✓</span>
-                                <span>{t('triz.stage3.bullet1')}</span>
+                                <span>{bullet1D}</span>
                               </li>
                               <li className="flex items-start gap-2">
                                 <span className="text-green-500 mt-1 flex-shrink-0">✓</span>
-                                <span>{t('triz.stage3.bullet2')}</span>
+                                <span>{bullet2D}</span>
                               </li>
                               <li className="flex items-start gap-2">
                                 <span className="text-green-500 mt-1 flex-shrink-0">✓</span>
-                                <span>{t('triz.stage3.bullet3')}</span>
+                                <span>{bullet3D}</span>
                               </li>
                             </ul>
                           </div>
                           <div className="bg-gradient-to-r from-green-500 to-green-600 p-3 sm:p-4 rounded-lg text-white">
                             <div className="text-sm sm:text-base font-semibold mb-2">{t('triz.stage3.expectedResultLabel')}</div>
-                            <p className="text-xs sm:text-sm text-green-50">
-                              {t('triz.stage3.expectedResultText')}
-                            </p>
+                            <p className="text-xs sm:text-sm text-green-50">{expectedD}</p>
                           </div>
                         </div>
                       </div>

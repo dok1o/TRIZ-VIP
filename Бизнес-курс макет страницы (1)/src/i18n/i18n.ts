@@ -16,6 +16,113 @@ export const translations: Record<Lang, Record<string, string>> = {
     "triz.input.placeholderProblem": "Введите описание вашей задачи или проблемы...",
     "triz.input.buttonAnalyze": "Начать анализ",
     "triz.input.buttonAnalyzing": "AI анализирует...",
+    "triz.case.presetLabel": "Кейс TRIZ VIP",
+    "triz.case.custom": "Свой вариант (только текст)",
+    "triz.case.water_cut_oil_fields": "Нефть и газ: обводнённость (KazMunayGas)",
+    "triz.case.cubesat_thermal": "Космос: перегрев CubeSat",
+    "triz.case.mining_tailings_recovery": "Горное дело: хвосты, извлечение хрома",
+
+    "triz.cases.water_cut_oil_fields.param1": "Обводнённость продукции и закачка нагнетания",
+    "triz.cases.water_cut_oil_fields.param2": "Баланс давления пласта и прорывов воды к добыче",
+    "triz.cases.water_cut_oil_fields.param3": "Затраты на подготовку/очистку воды и энергоёмкость",
+    "triz.cases.water_cut_oil_fields.contradictionText":
+      "Нужно нагнетать воду, чтобы держать давление в пласту, но нагнетание усиливает прорыв воды к добывающим скважинам и снижает добычу нефти.",
+    "triz.cases.water_cut_oil_fields.conflictUp": "Закачка ↑ для давления → обводнённость продукции ↑",
+    "triz.cases.water_cut_oil_fields.conflictDown": "Снижение закачки → давление ↓ → падение отбора нефти",
+    "triz.cases.water_cut_oil_fields.divisionText":
+      "Разделить функции: профиль закачки нагнетания, профиль отбора и локальное загущение/барьеры так, чтобы поддерживать давление без роста прорыва к продукции.",
+    "triz.cases.water_cut_oil_fields.bullet1": "Селективное/профильное закачивание и перераспределение потоков в пласте",
+    "triz.cases.water_cut_oil_fields.bullet2": "Разделение фаз на устье, повторное использование воды, полимерные гели в высокопроницаемых зонах",
+    "triz.cases.water_cut_oil_fields.bullet3": "Мониторинг прорывов (трейсеры, косвенные признаки) и оперативная коррекция режима",
+    "triz.cases.water_cut_oil_fields.emptyResult":
+      "Снижение числа «водяных» скважин, окупаемость мероприятий за счёт доп. нефти и экономии на подготовке воды.",
+
+    "triz.cases.cubesat_thermal.param1": "Тепловыделение передатчика и режим работы (duty cycle)",
+    "triz.cases.cubesat_thermal.param2": "Площадь и эффективность радиатора при заданной массе",
+    "triz.cases.cubesat_thermal.param3": "Термическая инерция и рабочий температурный коридор приборов",
+    "triz.cases.cubesat_thermal.contradictionText":
+      "Радиатор должен быть большим для отвода тепла, но габарит CubeSat требует минимальной площади и массы.",
+    "triz.cases.cubesat_thermal.conflictUp": "Мощность передатчика ↑ → тепловой поток ↑ → риск перегрева ↑",
+    "triz.cases.cubesat_thermal.conflictDown": "Увеличение радиатора → масса и моменты ↑, ограничения по раскрытию",
+    "triz.cases.cubesat_thermal.divisionText":
+      "Разделить временные режимы: пиковая передача короткими пакетами и пассивное/фазовое выравнивание температуры между сеансами.",
+    "triz.cases.cubesat_thermal.bullet1": "Тепловые трубки, теплораспределение по каркасу и к поверхности с высоким ε",
+    "triz.cases.cubesat_thermal.bullet2": "Материалы фазового перехода (PCM) и буферирование пиков без роста габарита в режиме хранения",
+    "triz.cases.cubesat_thermal.bullet3": "Раскладывающиеся радиаторы или вывод тепла через «холодный» торец при сохранении форм-фактора 1U/3U",
+    "triz.cases.cubesat_thermal.emptyResult":
+      "Стабильный температурный режим при большей средней мощности радиолинии при минимальном приросте массы.",
+
+    "triz.cases.mining_tailings_recovery.param1": "Дисперсность частиц Cr и вязкость пульпы",
+    "triz.cases.mining_tailings_recovery.param2": "Потери металла в потоке и содержание в осадке/фильтрате",
+    "triz.cases.mining_tailings_recovery.param3": "Экологические нормы слива и стоимость доработки хвостов",
+    "triz.cases.mining_tailings_recovery.contradictionText":
+      "Частицы должны быть мелкими по природе шлама, но для классической сепарации нужны более крупные агрегаты или иные силовые поля.",
+    "triz.cases.mining_tailings_recovery.conflictUp": "Тонкий помол ↑ иногда нужен для открытия зёрен → ухудшение гравитационного отбора",
+    "triz.cases.mining_tailings_recovery.conflictDown": "Грубая фракция ↑ для сепаратора → ниже извлечение из мелких частиц",
+    "triz.cases.mining_tailings_recovery.divisionText":
+      "Разделить потоки: селективная агрегация/флокуляция, разные физические поля (магнит, поверхность) вместо одного «универсального» отсека.",
+    "triz.cases.mining_tailings_recovery.bullet1": "Флотация/контрактная селективность для оксидов и тонких частиц",
+    "triz.cases.mining_tailings_recovery.bullet2": "Магнитная сепарация высокого градиента, тонкие слои магнитосодержащих минералов",
+    "triz.cases.mining_tailings_recovery.bullet3": "Мембранные/наноразмерные барьеры и контроль рециркуляции воды на обогатительной фабрике",
+    "triz.cases.mining_tailings_recovery.emptyResult":
+      "Рост извлечения хрома из хвостов при снижении экологических рисков и повторном использовании воды.",
+
+    "finance.cases.water_cut_oil_fields.hint":
+      "Фокус: CAPEX на профиль закачки, OPEX на подготовку воды и дополнительная нефть к скважине.",
+    "finance.cases.water_cut_oil_fields.defaultRevenue": "2,1 млн $",
+    "finance.cases.water_cut_oil_fields.defaultRoi": "19%",
+    "finance.cases.water_cut_oil_fields.defaultPayback": "14 мес",
+
+    "finance.cases.cubesat_thermal.hint":
+      "Фокус: стоимость радиатора/PCM, риск деградации электроники, ценность увеличения длительности сеанса связи.",
+    "finance.cases.cubesat_thermal.defaultRevenue": "480 тыс $",
+    "finance.cases.cubesat_thermal.defaultRoi": "24%",
+    "finance.cases.cubesat_thermal.defaultPayback": "11 мес",
+
+    "finance.cases.mining_tailings_recovery.hint":
+      "Фокус: маржа по извлечённому металлу, штрафы/залог экологии, экономия на складировании хвостов.",
+    "finance.cases.mining_tailings_recovery.defaultRevenue": "1,35 млн $",
+    "finance.cases.mining_tailings_recovery.defaultRoi": "31%",
+    "finance.cases.mining_tailings_recovery.defaultPayback": "9 мес",
+
+    "patent.cases.water_cut_oil_fields.emptySubtitle":
+      "Отчёт по кейсу добычи: обводнённость, профиль нагнетания, меры по снижению WOR.",
+    "patent.cases.water_cut_oil_fields.section1.text":
+      "Способ локализации водопроявлений на зрелых месторождениях с селективным закачиванием и контролем профиля нагнетания",
+    "patent.cases.water_cut_oil_fields.section2.text":
+      "Добыча нефти, поддержание пластового давления, подготовка и повторное использование попутно добываемой и нагнетаемой воды.",
+    "patent.cases.water_cut_oil_fields.section3.text":
+      "Рост обводнённости при нагнетании и прорывах воды к продуктивным скважинам при фиксированных ограничениях по давлению и водоотливу.",
+    "patent.cases.water_cut_oil_fields.section4.text":
+      "Снижение коэффициента обводнённости продукции, сокращение затрат на подготовку воды и увеличение отбора нефти.",
+    "patent.cases.water_cut_oil_fields.section5.text":
+      "Система, включающая модули оценки профиля закачки, дозирования реагентов/гелей в высокопроницаемые каналы и обратной связи по обводнённости продукции.",
+
+    "patent.cases.cubesat_thermal.emptySubtitle":
+      "Отчёт по тепловому контуру малых КА: отвод мощности связи в ограниченном объёме.",
+    "patent.cases.cubesat_thermal.section1.text":
+      "Тепловой контур малых космических аппаратов с распределением пиковых нагрузок передатчика по фазовому буферу",
+    "patent.cases.cubesat_thermal.section2.text":
+      "Космическая связь, бортовая электроника CubeSat и пассивные/полуактивные теплоотводящие элементы.",
+    "patent.cases.cubesat_thermal.section3.text":
+      "Рост мощности передатчика в недостаточном для классического радиатора объёме при ограничении массы.",
+    "patent.cases.cubesat_thermal.section4.text":
+      "Выравнивание температурных пиков, снижение риска перегрева и возможность увеличения средней мощности радиолинии.",
+    "patent.cases.cubesat_thermal.section5.text":
+      "Бортовой тепловой узел, содержащий элементы распределения тепла, фазовый буфер и интерфейс к радиационно-эффективной поверхности.",
+
+    "patent.cases.mining_tailings_recovery.emptySubtitle":
+      "Отчёт по доработке хвостов: извлечение хрома, экология и экономика цикла воды.",
+    "patent.cases.mining_tailings_recovery.section1.text":
+      "Способ извлечения дисперсных частиц хрома из тонкодисперсных хвостов обогащения",
+    "patent.cases.mining_tailings_recovery.section2.text":
+      "Обогащение руд, переработка хвостохранилищ, очистка оборотных вод и утилизация отходов.",
+    "patent.cases.mining_tailings_recovery.section3.text":
+      "Низкая степень извлечения мелких частиц при стандартных сепараторах и требования по качеству сбросов.",
+    "patent.cases.mining_tailings_recovery.section4.text":
+      "Повышение извлечения хрома и снижение экологической нагрузки при повторном использовании воды.",
+    "patent.cases.mining_tailings_recovery.section5.text":
+      "Установка, объединяющая этапы селективного обогащения, магнитного/поверхностного разделения и контроль тонких фракций в рециркуляции.",
 
     "triz.stage.input.label": "Проблема",
     "triz.stage.analysis.label": "Анализ",
@@ -127,6 +234,113 @@ export const translations: Record<Lang, Record<string, string>> = {
     "triz.input.placeholderProblem": "Enter your task or problem description...",
     "triz.input.buttonAnalyze": "Start analysis",
     "triz.input.buttonAnalyzing": "AI is analyzing...",
+    "triz.case.presetLabel": "TRIZ VIP case",
+    "triz.case.custom": "Custom (text only)",
+    "triz.case.water_cut_oil_fields": "Oil & gas: water cut (KazMunayGas)",
+    "triz.case.cubesat_thermal": "Space: CubeSat overheating",
+    "triz.case.mining_tailings_recovery": "Mining: tailings, chromium recovery",
+
+    "triz.cases.water_cut_oil_fields.param1": "Produced water cut and injection volumes",
+    "triz.cases.water_cut_oil_fields.param2": "Reservoir pressure support vs water breakthrough to producers",
+    "triz.cases.water_cut_oil_fields.param3": "Water treatment OPEX and energy intensity",
+    "triz.cases.water_cut_oil_fields.contradictionText":
+      "Water must be injected to hold pressure, yet injection drives breakthrough to producing wells and lowers oil output.",
+    "triz.cases.water_cut_oil_fields.conflictUp": "Injection ↑ for pressure → produced water ↑",
+    "triz.cases.water_cut_oil_fields.conflictDown": "Cutting injection → pressure ↓ → oil rate risk ↓ but recovery risk ↑",
+    "triz.cases.water_cut_oil_fields.divisionText":
+      "Separate injection conformance from producer drawdown: profile control, local tightening, and phase handling at the wellhead.",
+    "triz.cases.water_cut_oil_fields.bullet1": "Selective/profile injection and flow rebalancing in high-perm streaks",
+    "triz.cases.water_cut_oil_fields.bullet2": "Rigorous surface separation, water reuse, polymer gels / conformance in thief zones",
+    "triz.cases.water_cut_oil_fields.bullet3": "Surveillance (tracers, temperature, rates) with fast operating limits adjustments",
+    "triz.cases.water_cut_oil_fields.emptyResult":
+      "Fewer watered-off producers; payback via incremental oil and lower water-handling costs.",
+
+    "triz.cases.cubesat_thermal.param1": "Transmitter dissipation and duty cycle",
+    "triz.cases.cubesat_thermal.param2": "Radiator area ε and mass budget",
+    "triz.cases.cubesat_thermal.param3": "Thermal inertia and payload temperature guard-bands",
+    "triz.cases.cubesat_thermal.contradictionText":
+      "Radiators must be large for heat rejection yet CubeSat volume demands minimal area and mass.",
+    "triz.cases.cubesat_thermal.conflictUp": "TX power ↑ → heat flux ↑ → overheating risk ↑",
+    "triz.cases.cubesat_thermal.conflictDown": "Bigger radiator / deployable → mass, stiffness, and deployment complexity ↑",
+    "triz.cases.cubesat_thermal.divisionText":
+      "Time-separate peaks: short burst links plus passive/phase buffering between passes to average dissipation.",
+    "triz.cases.cubesat_thermal.bullet1": "Heat pipes/spreaders routing heat to high-emissivity panels",
+    "triz.cases.cubesat_thermal.bullet2": "Phase-change materials to absorb spikes without permanent volume cost in stow",
+    "triz.cases.cubesat_thermal.bullet3": "Deployable radiators or cold-sink interfaces while keeping 1U/3U constraints",
+    "triz.cases.cubesat_thermal.emptyResult":
+      "Stable thermal headroom for higher average RF power with limited mass growth.",
+
+    "triz.cases.mining_tailings_recovery.param1": "Chromium particle size and pulp rheology",
+    "triz.cases.mining_tailings_recovery.param2": "Metal losses to tailings stream vs concentrate grade",
+    "triz.cases.mining_tailings_recovery.param3": "Discharge limits and cost of tailings re-processing",
+    "triz.cases.mining_tailings_recovery.contradictionText":
+      "Fines are inherent to slurry yet standard separators prefer coarser/slower-settling solids or different field forces.",
+    "triz.cases.mining_tailings_recovery.conflictUp": "Finer liberation ↑ recovery opportunity → worse gravity capture",
+    "triz.cases.mining_tailings_recovery.conflictDown": "Coarser feed ↑ for cyclones → misses ultrafine chromite",
+    "triz.cases.mining_tailings_recovery.divisionText":
+      "Split the stream: selective surface chemistry, high-gradient magnetic paths, and water recycle control instead of one generic sump.",
+    "triz.cases.mining_tailings_recovery.bullet1": "Flotation with selective collectors for oxide/hydroxide fines",
+    "triz.cases.mining_tailings_recovery.bullet2": "High-gradient magnetic separation and stratified bed capture",
+    "triz.cases.mining_tailings_recovery.bullet3": "Membrane polish / nanofiltration loops with closed water balance",
+    "triz.cases.mining_tailings_recovery.emptyResult":
+      "Higher Cr recovery from wastes with lower environmental liability and water reuse.",
+
+    "finance.cases.water_cut_oil_fields.hint":
+      "Focus: conformance CAPEX, water-treatment OPEX, and incremental oil per well.",
+    "finance.cases.water_cut_oil_fields.defaultRevenue": "$2.1M",
+    "finance.cases.water_cut_oil_fields.defaultRoi": "19%",
+    "finance.cases.water_cut_oil_fields.defaultPayback": "14 mo",
+
+    "finance.cases.cubesat_thermal.hint":
+      "Focus: thermal hardware cost, reliability derating, and value of longer contact passes.",
+    "finance.cases.cubesat_thermal.defaultRevenue": "$480k",
+    "finance.cases.cubesat_thermal.defaultRoi": "24%",
+    "finance.cases.cubesat_thermal.defaultPayback": "11 mo",
+
+    "finance.cases.mining_tailings_recovery.hint":
+      "Focus: metal credit margin, environmental bonds/fines avoided, and tailings storage deferral.",
+    "finance.cases.mining_tailings_recovery.defaultRevenue": "$1.35M",
+    "finance.cases.mining_tailings_recovery.defaultRoi": "31%",
+    "finance.cases.mining_tailings_recovery.defaultPayback": "9 mo",
+
+    "patent.cases.water_cut_oil_fields.emptySubtitle":
+      "Oilfield case brief: water cut, injection profile, and WOR reduction levers.",
+    "patent.cases.water_cut_oil_fields.section1.text":
+      "Method for controlling water breakthrough in mature fields using selective injection profiling",
+    "patent.cases.water_cut_oil_fields.section2.text":
+      "Oil production, reservoir pressure maintenance, produced/ injected water treatment and recycling.",
+    "patent.cases.water_cut_oil_fields.section3.text":
+      "Rising water cut as injection supports pressure yet channels water toward producers under fixed cost limits.",
+    "patent.cases.water_cut_oil_fields.section4.text":
+      "Lower water cut, reduced water-handling costs, and higher oil offtake.",
+    "patent.cases.water_cut_oil_fields.section5.text":
+      "System with conformance diagnostics modules, targeted gel/polymer placement, and feedback from wellhead water cut.",
+
+    "patent.cases.cubesat_thermal.emptySubtitle":
+      "Small-satellite thermal memo: rejecting RF heat in tight volume.",
+    "patent.cases.cubesat_thermal.section1.text":
+      "Thermal management architecture for CubeSats buffering transmitter peaks with phase-change media",
+    "patent.cases.cubesat_thermal.section2.text":
+      "Satellite communications, CubeSat avionics, passive and semi-active thermal control.",
+    "patent.cases.cubesat_thermal.section3.text":
+      "Higher transmitter power in insufficient radiator envelope under strict mass limits.",
+    "patent.cases.cubesat_thermal.section4.text":
+      "Peak temperature mitigation enabling higher average RF throughput with bounded mass growth.",
+    "patent.cases.cubesat_thermal.section5.text":
+      "Onboard thermal assembly comprising heat spreading paths, a phase-change buffer, and a radiation-coupled sink interface.",
+
+    "patent.cases.mining_tailings_recovery.emptySubtitle":
+      "Tailings valorization brief: chromium fines, water loop, and compliance.",
+    "patent.cases.mining_tailings_recovery.section1.text":
+      "Process for recovering dispersed chromium particles from fine tailings slurries",
+    "patent.cases.mining_tailings_recovery.section2.text":
+      "Mineral processing, tailings remediation, water recycling, and waste valorization.",
+    "patent.cases.mining_tailings_recovery.section3.text":
+      "Poor capture of ultrafines with conventional separators under tightening discharge rules.",
+    "patent.cases.mining_tailings_recovery.section4.text":
+      "Higher chromium recovery with lower environmental exposure and improved water reuse.",
+    "patent.cases.mining_tailings_recovery.section5.text":
+      "Plant combining selective upgrading, high-gradient magnetic paths, and fine-fraction monitoring in recycle loops.",
 
     "triz.stage.input.label": "Problem",
     "triz.stage.analysis.label": "Analysis",

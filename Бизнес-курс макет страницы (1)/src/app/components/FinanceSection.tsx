@@ -1,19 +1,38 @@
-import { useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { motion } from 'motion/react';
 import { ArrowRight, DollarSign, PieChart, Sparkles, TrendingUp, X } from 'lucide-react';
 import { Button } from './ui/button';
 import { useI18n } from '../../i18n/I18nProvider';
+import { financeCaseDefaults } from '../../i18n/trizCaseCopy';
+import { TRIZ_CASE_CLEAR, TRIZ_CASE_FILL, type CasePreset, type CaseResult } from '../../ollamaCase';
 
 interface FinanceSectionProps {
   isExpanded: boolean;
   isDimmed: boolean;
   onExpand: () => void;
   onNextSection: () => void;
+  casePreset: CasePreset;
 }
 
-export function FinanceSection({ isExpanded, isDimmed, onExpand, onNextSection }: FinanceSectionProps) {
+export function FinanceSection({ isExpanded, isDimmed, onExpand, onNextSection, casePreset }: FinanceSectionProps) {
   const [showForecast, setShowForecast] = useState(false);
-  const { t } = useI18n();
+  const [financeFromAi, setFinanceFromAi] = useState<string | null>(null);
+  const { t, lang } = useI18n();
+  const finDefaults = useMemo(() => financeCaseDefaults(t, casePreset), [t, casePreset, lang]);
+
+  useEffect(() => {
+    const onFill = (e: Event) => {
+      const d = (e as CustomEvent<CaseResult>).detail;
+      if (d?.finance?.trim()) setFinanceFromAi(d.finance);
+    };
+    const onClear = () => setFinanceFromAi(null);
+    window.addEventListener(TRIZ_CASE_FILL, onFill as EventListener);
+    window.addEventListener(TRIZ_CASE_CLEAR, onClear);
+    return () => {
+      window.removeEventListener(TRIZ_CASE_FILL, onFill as EventListener);
+      window.removeEventListener(TRIZ_CASE_CLEAR, onClear);
+    };
+  }, []);
 
   return (
     <motion.section
@@ -71,9 +90,14 @@ export function FinanceSection({ isExpanded, isDimmed, onExpand, onNextSection }
           </motion.div>
         ) : (
           <motion.div className="w-full max-w-6xl mx-auto pb-20" initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.2 }}>
-            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-6 sm:mb-8 text-slate-900 text-center">
+            <h2 className="text-2xl sm:text-3xl md:text-4xl mb-2 text-slate-900 text-center">
               {t('finance.title')}
             </h2>
+            {finDefaults.hint ? (
+              <p className="text-center text-sm text-slate-600 mb-6 max-w-3xl mx-auto">{finDefaults.hint}</p>
+            ) : (
+              <div className="mb-6" />
+            )}
 
             <Button
               className="w-full mb-6 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white py-6 rounded-xl flex items-center justify-center gap-2"
@@ -90,21 +114,23 @@ export function FinanceSection({ isExpanded, isDimmed, onExpand, onNextSection }
                     <DollarSign className="w-4 h-4" />
                     {t('finance.forecast.revenueLabel')}
                   </div>
-                  <div className="text-2xl text-slate-900">$150,000</div>
+                  <div className="text-2xl text-slate-900" id="finance">
+                    {financeFromAi ?? finDefaults.revenue}
+                  </div>
                 </div>
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
                   <div className="flex items-center gap-2 text-slate-600 mb-2">
                     <PieChart className="w-4 h-4" />
                     {t('finance.forecast.roiLabel')}
                   </div>
-                  <div className="text-2xl text-green-600">200%</div>
+                  <div className="text-2xl text-green-600">{finDefaults.roi}</div>
                 </div>
                 <div className="bg-white/80 backdrop-blur-sm rounded-xl p-4 border border-gray-200">
                   <div className="flex items-center gap-2 text-slate-600 mb-2">
                     <TrendingUp className="w-4 h-4" />
                     {t('finance.forecast.paybackLabel')}
                   </div>
-                  <div className="text-2xl text-blue-600">{t('finance.forecast.paybackValue')}</div>
+                  <div className="text-2xl text-blue-600">{finDefaults.payback}</div>
                 </div>
               </div>
             )}
