@@ -1,8 +1,10 @@
 services:
+  # POST /api/case — на GitHub Pages этого нет, отсюда 405 при fetch на github.io.
+  # Фронт должен собираться с VITE_API_BASE=https://<этот-сервис>.onrender.com
   - type: web
     name: triz-vip-api
     env: node
-    rootDir: "Бизнес-курс макет страницы (1)"
+    rootDir: business-course-page
     buildCommand: "npm ci"
     startCommand: "npm run server"
     autoDeploy: true
@@ -20,6 +22,28 @@ services:
         sync: false
       - key: OLLAMA_MODEL
         value: "llama3"
-      # Set to your GitHub Pages origin, e.g. https://dok1o.github.io
+      # Comma-separated: static site URL + GitHub Pages if you still use both.
+      # Example: https://triz-vip-web.onrender.com,https://yourname.github.io
       - key: ALLOWED_ORIGIN
         sync: false
+
+  # Статический фронт на Render (base=/). API — triz-vip-api выше.
+  - type: web
+    name: triz-vip-web
+    runtime: static
+    rootDir: business-course-page
+    buildCommand: "npm ci && npm run build"
+    staticPublishPath: dist
+    autoDeploy: true
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: VITE_BASE
+        value: "/"
+      # Должен совпадать с публичным URL API после деплоя (или задай в UI Render).
+      - key: VITE_API_BASE
+        value: "https://triz-vip-api.onrender.com"

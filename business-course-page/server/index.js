@@ -4,9 +4,16 @@ import cors from "cors";
 const app = express();
 
 const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "*";
+const corsOrigins =
+  allowedOrigin === "*"
+    ? true
+    : allowedOrigin
+        .split(",")
+        .map((s) => s.trim())
+        .filter(Boolean);
 app.use(
   cors({
-    origin: allowedOrigin === "*" ? true : allowedOrigin,
+    origin: corsOrigins,
     methods: ["GET", "POST", "OPTIONS"],
     allowedHeaders: ["Content-Type"],
   }),
