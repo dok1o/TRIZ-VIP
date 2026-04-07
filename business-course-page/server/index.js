@@ -169,9 +169,15 @@ app.post("/api/case", async (req, res) => {
     userParts.push(`${lang === "ru" ? "Заметки" : "Notes"}:\n${input}`);
     const user = userParts.join("\n\n");
 
+    // ngrok free tier: без этого заголовка запросы с сервера часто получают 403 (interstitial / bot block)
+    const ollamaHeaders = { "content-type": "application/json" };
+    if (String(OLLAMA_URL).includes("ngrok")) {
+      ollamaHeaders["ngrok-skip-browser-warning"] = "true";
+    }
+
     const ollamaResp = await fetch(`${OLLAMA_URL}/api/chat`, {
       method: "POST",
-      headers: { "content-type": "application/json" },
+      headers: ollamaHeaders,
       body: JSON.stringify({
         model: OLLAMA_MODEL,
         stream: false,
