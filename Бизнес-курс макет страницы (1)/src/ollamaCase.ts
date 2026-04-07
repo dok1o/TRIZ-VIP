@@ -49,7 +49,10 @@ export async function fetchCase(params: {
   };
   if (params.caseName) body.caseName = params.caseName;
 
-  const resp = await fetch("/api/case", {
+  const apiBase = (import.meta as any)?.env?.VITE_API_BASE ? String((import.meta as any).env.VITE_API_BASE) : "";
+  const url = `${apiBase}/api/case`.replace(/\/{2,}/g, "/").replace(":/", "://");
+
+  const resp = await fetch(url, {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify(body),

@@ -1,6 +1,16 @@
 import express from "express";
+import cors from "cors";
 
 const app = express();
+
+const allowedOrigin = process.env.ALLOWED_ORIGIN ?? "*";
+app.use(
+  cors({
+    origin: allowedOrigin === "*" ? true : allowedOrigin,
+    methods: ["GET", "POST", "OPTIONS"],
+    allowedHeaders: ["Content-Type"],
+  }),
+);
 
 app.use(express.json({ limit: "64kb" }));
 

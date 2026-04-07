@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: triz-vip-api
+    env: node
+    rootDir: "Бизнес-курс макет страницы (1)"
+    buildCommand: "npm ci"
+    startCommand: "npm run server"
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: "24"
+      - key: PORT
+        value: "10000"
+      # IMPORTANT:
+      # Render must be able to reach Ollama. Set OLLAMA_URL to a PUBLIC endpoint (HTTPS).
+      # Examples:
+      # - https://<your-ollama-host>/  (if you run Ollama on a VPS)
+      # - https://<your-tunnel-domain>/ (if you tunnel your local Ollama)
+      - key: OLLAMA_URL
+        sync: false
+      - key: OLLAMA_MODEL
+        value: "llama3"
+      # Set to your GitHub Pages origin, e.g. https://dok1o.github.io
+      - key: ALLOWED_ORIGIN
+        sync: false
