@@ -92,6 +92,7 @@ app.get("/health", (_req, res) => {
 
 const OLLAMA_URL = process.env.OLLAMA_URL ?? "http://localhost:11434";
 const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? "llama3";
+const OLLAMA_API_KEY = process.env.OLLAMA_API_KEY ?? "";
 const PORT = Number.parseInt(process.env.PORT ?? "3001", 10);
 
 function safeJsonFromText(text) {
@@ -175,10 +176,17 @@ app.post("/api/case", async (req, res) => {
     userParts.push(`${lang === "ru" ? "Заметки" : "Notes"}:\n${input}`);
     const user = userParts.join("\n\n");
 
-    // ngrok free tier: без этого заголовка запросы с сервера часто получают 403 (interstitial / bot block)
-    const ollamaHeaders = { "content-type": "application/json" };
+    // ngrok free: страница-предупреждение даёт 403; обход — заголовок (часто нужен именно "69420")
+    const ollamaHeaders = {
+      "content-type": "application/json",
+      accept: "application/json",
+      "user-agent": "TRIZ-VIP-Render/1.0",
+    };
     if (String(OLLAMA_URL).includes("ngrok")) {
-      ollamaHeaders["ngrok-skip-browser-warning"] = "true";
+      ollamaHeaders["ngrok-skip-browser-warning"] = "69420";
+    }
+    if (OLLAMA_API_KEY) {
+      ollamaHeaders.authorization = `Bearer ${OLLAMA_API_KEY}`;
     }
 
     const ollamaResp = await fetch(`${OLLAMA_URL}/api/chat`, {
