@@ -70,10 +70,14 @@ export async function fetchCase(params: {
 
   const json = await resp.json().catch(() => null);
   if (!resp.ok) {
-    const msg =
-      json && typeof json === "object" && "error" in json
-        ? String((json as { error?: unknown }).error)
-        : `${resp.status} ${resp.statusText}`;
+    const errObj = json && typeof json === "object" ? (json as { error?: unknown; hint?: unknown; details?: unknown }) : null;
+    const parts: string[] = [];
+    if (errObj?.error) parts.push(String(errObj.error));
+    if (errObj?.hint) parts.push(String(errObj.hint));
+    if (errObj?.details && typeof errObj.details === "string" && errObj.details.length < 400) {
+      parts.push(String(errObj.details));
+    }
+    const msg = parts.length ? parts.join(" — ") : `${resp.status} ${resp.statusText}`;
     throw new Error(msg);
   }
 

@@ -95,6 +95,43 @@ const OLLAMA_MODEL = process.env.OLLAMA_MODEL ?? "llama3";
 const OLLAMA_API_KEY = process.env.OLLAMA_API_KEY ?? "";
 const PORT = Number.parseInt(process.env.PORT ?? "3001", 10);
 
+function baseOllamaHeaders() {
+  const h = {
+    "content-type": "application/json",
+    accept: "application/json",
+    "user-agent": "TRIZ-VIP-Render/1.0",
+  };
+  if (String(OLLAMA_URL).includes("ngrok")) {
+    h["ngrok-skip-browser-warning"] = "69420";
+  }
+  if (OLLAMA_API_KEY) {
+    h.authorization = `Bearer ${OLLAMA_API_KEY}`;
+  }
+  return h;
+}
+
+/** ngrok free иногда отдаёт 403 на первом наборе заголовков — пробуем несколько вариантов */
+const NGROK_HEADER_OVERRIDES = [
+  {},
+  { "ngrok-skip-browser-warning": "true" },
+  { "ngrok-skip-browser-warning": "69420", "bypass-tunnel-reminder": "true" },
+  { "ngrok-skip-browser-warning": "true", "bypass-tunnel-reminder": "true" },
+];
+
+function hint403Ngrok(details) {
+  const d = String(details);
+  const looksNgrok = d.includes("ngrok") || d.includes("ERR_NGROK") || d.includes("<!DOCTYPE");
+  if (!looksNgrok) {
+    return "Если в Ollama включён API key — задай OLLAMA_API_KEY в Render. Проверь, что ngrok смотрит на порт 11434.";
+  }
+  return (
+    "Бесплатный ngrok часто режет запросы с IP облака (Render), даже с заголовком. Варианты: " +
+    "Cloudflare Tunnel (cloudflared) вместо ngrok; платный ngrok; или Ollama на VPS. " +
+    "С ПК проверь: curl -sS -H ngrok-skip-browser-warning:69420 " +
+    `${OLLAMA_URL}/api/tags`
+  );
+}
+
 function safeJsonFromText(text) {
   if (typeof text !== "string") return null;
   const start = text.indexOf("{");
@@ -176,45 +213,52 @@ app.post("/api/case", async (req, res) => {
     userParts.push(`${lang === "ru" ? "Заметки" : "Notes"}:\n${input}`);
     const user = userParts.join("\n\n");
 
-    // ngrok free: страница-предупреждение даёт 403; обход — заголовок (часто нужен именно "69420")
-    const ollamaHeaders = {
-      "content-type": "application/json",
-      accept: "application/json",
-      "user-agent": "TRIZ-VIP-Render/1.0",
-    };
-    if (String(OLLAMA_URL).includes("ngrok")) {
-      ollamaHeaders["ngrok-skip-browser-warning"] = "69420";
-    }
-    if (OLLAMA_API_KEY) {
-      ollamaHeaders.authorization = `Bearer ${OLLAMA_API_KEY}`;
-    }
-
-    const ollamaResp = await fetch(`${OLLAMA_URL}/api/chat`, {
-      method: "POST",
-      headers: ollamaHeaders,
-      body: JSON.stringify({
-        model: OLLAMA_MODEL,
-        stream: false,
-        messages: [
-          { role: "system", content: system },
-          { role: "user", content: user },
-        ],
-        options: {
-          temperature: 0.15,
-          num_predict: 240,
-          top_k: 24,
-          top_p: 0.85,
-        },
-      }),
+    const chatBody = JSON.stringify({
+      model: OLLAMA_MODEL,
+      stream: false,
+      messages: [
+        { role: "system", content: system },
+        { role: "user", content: user },
+      ],
+      options: {
+        temperature: 0.15,
+        num_predict: 240,
+        top_k: 24,
+        top_p: 0.85,
+      },
     });
 
-    if (!ollamaResp.ok) {
-      const errText = await ollamaResp.text().catch(() => "");
-      return res.status(502).json({
-        error: `Ollama error: ${ollamaResp.status}`,
-        details: errText.slice(0, 500),
-        ...emptyCase(),
+    const chatUrl = `${OLLAMA_URL}/api/chat`;
+    const isNgrok = String(OLLAMA_URL).includes("ngrok");
+    const overrides = isNgrok ? NGROK_HEADER_OVERRIDES : [{}];
+
+    let ollamaResp;
+    let lastErrText = "";
+    for (let i = 0; i < overrides.length; i++) {
+      const ollamaHeaders = { ...baseOllamaHeaders(), ...overrides[i] };
+      ollamaResp = await fetch(chatUrl, {
+        method: "POST",
+        headers: ollamaHeaders,
+        body: chatBody,
       });
+      if (ollamaResp.ok) break;
+      lastErrText = await ollamaResp.text().catch(() => "");
+      if (!(isNgrok && ollamaResp.status === 403 && i < overrides.length - 1)) {
+        break;
+      }
+    }
+
+    if (!ollamaResp.ok) {
+      const errText = lastErrText || (await ollamaResp.text().catch(() => ""));
+      const payload = {
+        error: `Ollama error: ${ollamaResp.status}`,
+        details: errText.slice(0, 1200),
+        ...emptyCase(),
+      };
+      if (ollamaResp.status === 403) {
+        payload.hint = hint403Ngrok(errText);
+      }
+      return res.status(502).json(payload);
     }
 
     const raw = await ollamaResp.json();
